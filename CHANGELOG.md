@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1
+
+The copyright line at the top of each file now names this project and its licence (PolyForm Noncommercial 1.0.0); the earlier line wrongly reserved every right, which the licence does not. No code changes.
+
 ## [1.3.0]
 
 ### Added

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Solance House — Copyright (c) 2026 House of Solance. All rights reserved. Required Notice: Copyright (c) 2026 House of Solance (https://github.com/SolanceLab)
+# vault-map — Copyright (c) 2026 House of Solance. PolyForm Noncommercial 1.0.0. Required Notice: Copyright (c) 2026 House of Solance (https://github.com/SolanceLab)
 # Copyright (c) 2026 House of Solance. Required Notice: Copyright (c) 2026 House of Solance (https://github.com/SolanceLab)
 """vault-map — a pure-local Obsidian vault index. Query the map, don't re-read the vault.
 

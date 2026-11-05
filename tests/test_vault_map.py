@@ -1,4 +1,4 @@
-# Solance House — Copyright (c) 2026 House of Solance. All rights reserved. Required Notice: Copyright (c) 2026 House of Solance (https://github.com/SolanceLab)
+# vault-map — Copyright (c) 2026 House of Solance. PolyForm Noncommercial 1.0.0. Required Notice: Copyright (c) 2026 House of Solance (https://github.com/SolanceLab)
 # Copyright (c) 2026 House of Solance. Required Notice: Copyright (c) 2026 House of Solance (https://github.com/SolanceLab)
 """Smoke tests: build a tiny temp vault, check search() and search_sections() run. No network; HOME is a temp dir."""
 import contextlib
