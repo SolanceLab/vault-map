@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+
+Installable as a plugin for Claude Code and Codex. The plugin is a skill that runs vault-map with `uvx` straight from this repository, so nothing is copied by hand. `pyproject.toml` lets `uvx` fetch the one script. The tool itself is unchanged.
+
 ## 1.3.1
 
 The copyright line at the top of each file now names this project and its licence (PolyForm Noncommercial 1.0.0); the earlier line wrongly reserved every right, which the licence does not. No code changes.

@@ -1,0 +1,15 @@
+[project]
+name = "vault-map"
+version = "1.4.0"
+description = "A pure-local index for a markdown vault: ask where you wrote about something and get the passage back."
+requires-python = ">=3.8"
+license = { text = "PolyForm-Noncommercial-1.0.0 (PolyForm Noncommercial 1.0.0)" }
+authors = [{ name = "House of Solance" }]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = []
+script-files = ["vault-map.py"]

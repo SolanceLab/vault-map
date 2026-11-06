@@ -8,6 +8,7 @@
 | `python3 vault-map.py query "terms" [vault] [--n N] [--json]` | Ranked notes, with snippets and link neighbourhood |
 | `python3 vault-map.py graph [vault] [--out file.html]` | A self-contained interactive graph of the vault |
 | `python3 vault-map.py path "a" "b" [vault]` | Shortest wikilink chain between two notes |
+| `uvx --from git+https://github.com/SolanceLab/vault-map@v1.4.0 vault-map.py <command>` | The same commands, fetched and run by `uvx` (what the plugin's skill uses) |
 | `search(terms, vault, top_n)` (import) | Ranked notes as a dict |
 | `search_sections(terms, vault, top_n)` (import) | Ranked sections as a dict: the `search()` fields plus `section`, `text`, `also_in` |
 

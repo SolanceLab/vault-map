@@ -1,0 +1,9 @@
+{
+  "name": "vault-map",
+  "description": "vault-map: ask where you wrote about something and get the passage back, from a map of your markdown or Obsidian vault. Runs on your own computer; nothing leaves it.",
+  "version": "1.4.0",
+  "author": {
+    "name": "House of Solance"
+  },
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

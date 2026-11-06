@@ -4,7 +4,7 @@ Made by House of Solance · free for noncommercial use · credit required
 
 ## What it is
 
-A pure-local index for an Obsidian (or any markdown) vault. Build the map once in seconds, then answer "where did we write about X?" from the map instead of re-reading hundreds of notes. Version 1.3.0 adds section search: it returns the passage that answers the question, not only the note it sits in.
+A pure-local index for an Obsidian (or any markdown) vault. Build the map once in seconds, then answer "where did we write about X?" from the map instead of re-reading hundreds of notes. Version 1.3.0 added section search: it returns the passage that answers the question, not only the note it sits in.
 
 **Zero dependencies, zero network, zero AI.** One Python file, standard library only. Nothing in your vault ever leaves your machine. vault-map runs on your own computer.
 
@@ -14,7 +14,22 @@ Python 3.8 or newer. No install, no account, no server. Copy `vault-map.py` anyw
 
 ## Install
 
-One step: copy `vault-map.py` to your machine (or clone this repository).
+Two ways, both one step.
+
+**As a plugin** (Claude Code and Codex). The plugin teaches your AI to run vault-map for you; it needs [uv](https://docs.astral.sh/uv/) on your computer.
+
+```
+claude plugin marketplace add SolanceLab/plugins
+claude plugin install vault-map@solancelab
+```
+
+```
+codex plugin marketplace add SolanceLab/plugins
+```
+
+Then install vault-map from that store in Codex's plugin list.
+
+**By hand.** Copy `vault-map.py` to your machine (or clone this repository).
 
 ```
 python3 vault-map.py build /path/to/vault
