@@ -6,7 +6,7 @@ Made by House of Solance · free for noncommercial use · credit required
 
 A pure-local index for an Obsidian (or any markdown) vault. Build the map once in seconds, then answer "where did we write about X?" from the map instead of re-reading hundreds of notes. Version 1.3.0 added section search: it returns the passage that answers the question, not only the note it sits in.
 
-**Zero dependencies, zero network, zero AI.** One Python file, standard library only. Nothing in your vault ever leaves your machine. vault-map runs on your own computer.
+**Zero dependencies, zero AI, and the tool never touches the network.** One Python file, standard library only. Nothing in your vault ever leaves your machine. (Only the plugin's one-time `uvx` fetch of the tool itself uses the internet.) vault-map runs on your own computer.
 
 ## What you need
 

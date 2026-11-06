@@ -5,11 +5,11 @@ description: Use when the user asks where something was written in their markdow
 
 # vault-map
 
-vault-map is one Python file that maps a folder of markdown notes (an Obsidian vault works as is) and answers "where did I write about X?" from the map instead of re-reading every note. No network, no AI, nothing installed beyond the command below.
+vault-map is one Python file that maps a folder of markdown notes (an Obsidian vault works as is) and answers "where did I write about X?" from the map instead of re-reading every note. The tool itself makes no network calls and uses no AI; the one-time `uvx` fetch below is the only thing that needs the internet.
 
 ## Run it
 
-Every command starts with this prefix. `uvx` fetches vault-map once and runs it; Python 3.8 or newer is needed.
+Every command starts with this prefix, and below `vault-map.py` stands for the whole prefix (`uvx --from ... vault-map.py`) each time, because `uvx` does not install the command for later use. `uvx` fetches vault-map once and runs it; Python 3.8 or newer is needed.
 
 ```
 uvx --from "git+https://github.com/SolanceLab/vault-map@v1.4.0" vault-map.py <command>
