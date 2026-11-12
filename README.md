@@ -2,6 +2,45 @@
 
 Made by House of Solance · free for noncommercial use · credit required
 
+vault-map finds where you wrote about something in your notes, in a second, without your AI reading them all.
+
+<div align="center">
+
+🗂️
+
+*Your vault is a library you wrote yourself. Session notes, findings, half-finished ideas, years of it. Every note is a book, and the shelves never stop filling.*
+
+*Now you need one passage: the day you decided something, the paragraph where you explained why. Without a map, your AI has to open the books one by one. It spends its tokens on pages that don't matter, and the passage you need is still on a shelf it never reached.*
+
+**vault-map is the card catalogue.** *It reads every shelf once and writes a card for each book, each chapter, each paragraph. Ask where you wrote about something, and it opens the right drawer and points: this note, this section, these lines. Your AI goes straight there and reads only that.*
+
+*The catalogue lives on your computer. It never writes in your books, and it never sends them anywhere.*
+
+</div>
+
+<p align="center"><img src="docs/how-it-works.svg" width="900" alt="Your AI asks vault-map once instead of reading every note. vault-map has read your vault once and keeps a catalogue on your computer: notes, their sections and their passages. It points to the one note, section and passage that answer, and your AI reads only that."></p>
+
+## Quick start
+
+**Let your AI do it.** Copy this and send it to Claude Code:
+
+```
+Please install vault-map for me. If uv is not installed, install it first:
+claude plugin marketplace add SolanceLab/plugins
+claude plugin install vault-map@solancelab
+Then build the map of my vault and show me a search.
+```
+
+Using Codex? Send the same message with `codex plugin marketplace add SolanceLab/plugins`, then install vault-map from that store in Codex's plugin list.
+
+**Or do it yourself:** run the two `claude plugin` lines from that message in your terminal (the plugin needs [uv](https://docs.astral.sh/uv/)).
+
+**By hand.** Copy `vault-map.py` to your machine (or clone this repository).
+
+```
+python3 vault-map.py build /path/to/vault
+```
+
 ## What it is
 
 A pure-local index for an Obsidian (or any markdown) vault. Build the map once in seconds, then answer "where did we write about X?" from the map instead of re-reading hundreds of notes. Version 1.3.0 added section search: it returns the passage that answers the question, not only the note it sits in.
@@ -11,29 +50,6 @@ A pure-local index for an Obsidian (or any markdown) vault. Build the map once i
 ## What you need
 
 Python 3.8 or newer. No install, no account, no server. Copy `vault-map.py` anywhere.
-
-## Install
-
-Two ways, both one step.
-
-**As a plugin** (Claude Code and Codex). The plugin teaches your AI to run vault-map for you; it needs [uv](https://docs.astral.sh/uv/) on your computer.
-
-```
-claude plugin marketplace add SolanceLab/plugins
-claude plugin install vault-map@solancelab
-```
-
-```
-codex plugin marketplace add SolanceLab/plugins
-```
-
-Then install vault-map from that store in Codex's plugin list.
-
-**By hand.** Copy `vault-map.py` to your machine (or clone this repository).
-
-```
-python3 vault-map.py build /path/to/vault
-```
 
 ## Settings
 
@@ -55,27 +71,7 @@ python3 vault-map.py build /path/to/vault
 | `search(terms, vault, top_n)` | Importable. Returns the `query` results as a dict and prints nothing |
 | `search_sections(terms, vault, top_n)` | Importable. Section search: returns the best passages, each with the note it came from |
 
-### Section search (new in 1.3.0)
-
-`search_sections()` splits each note into sections and ranks the sections, so a long note with one relevant paragraph surfaces that paragraph. It returns the same fields as `search()` and adds:
-
-- `section`: the heading the passage sits under
-- `text`: the full text of that section
-- `also_in`: other notes that carry the same passage. A passage copied across notes (for example one session exported twice) is shown once, and the copies are listed here
-
-Snippets are cut on sentence boundaries around the best-matching window. The section index is saved in `~/.cache/vault-map/` (never inside your vault), and only notes that changed are re-read on the next call.
-
-```python
-import importlib.util
-spec = importlib.util.spec_from_file_location("vault_map", "vault-map.py")
-vm = importlib.util.module_from_spec(spec); spec.loader.exec_module(vm)
-
-vm.build("/path/to/vault")
-for hit in vm.search_sections(["backup", "rotation"], "/path/to/vault", 5)["results"]:
-    print(hit["path"], "|", hit["section"], "|", hit["snippet"])
-```
-
-The `query` command and its `--json` output are unchanged; the existing fields keep their names and meaning.
+Section search (`--sections`, `search_sections()`) returns the passage that answers, not the whole note; how it works and a Python example: [docs/section-search.md](docs/section-search.md).
 
 ## Limits
 

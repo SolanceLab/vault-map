@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 490" width="1020" height="490" role="img" aria-labelledby="t d">
+  <title id="t">How vault-map works</title>
+  <desc id="d">Without vault-map your AI opens every note (crossed out). vault-map reads your vault once and keeps a catalogue of notes, sections and passages on your computer. Your AI asks where you wrote about something; vault-map points to one note, one section and the passage that answers, and your AI reads only that.</desc>
+  <style>
+    .bg{fill:none}
+    .frame{fill:#f6f8fa;stroke:#8c959f;stroke-width:1.5;stroke-dasharray:6 5}
+    .title{font:600 17px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#1f2328}
+    .label{font:500 12px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#1f2328}
+    .small{font:400 11px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#59636e}
+    .verb{font:600 15px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#1f2328}
+    .arrow{stroke:#59636e;stroke-width:2;fill:none}
+    .head{fill:#59636e}
+    .line{stroke:#afb8c1;stroke-width:3;stroke-linecap:round}
+    .plank{stroke:#59636e;stroke-width:3;stroke-linecap:round}
+    .note{fill:#dafbe1;stroke:#1a7f37}
+    .chat{fill:#ddf4ff;stroke:#0969da}
+    .mem{fill:#fbefff;stroke:#8250df}
+    .vault{fill:#fff1e5;stroke:#bc4c00}
+    .q{fill:#ffffff;stroke:#1f2328}
+    .old{stroke:#afb8c1;stroke-width:2;stroke-dasharray:5 5;fill:none}.oldhead{fill:#afb8c1}.x{stroke:#cf222e}
+    .note.pick{fill:#1a7f37}.chat.pick{fill:#0969da}.mem.pick{fill:#8250df}
+    .ante{fill:#1f2328;stroke:#1f2328}
+    .antetext{font:600 14px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#ffffff}
+    .card{fill:#ffffff;stroke:#8c959f}
+    @media (prefers-color-scheme: dark){
+      .frame{fill:#161b22;stroke:#6e7681}
+      .title,.label,.verb{fill:#e6edf3}
+      .small{fill:#9198a1}
+      .arrow{stroke:#9198a1}.head{fill:#9198a1}
+      .line{stroke:#484f58}
+      .plank{stroke:#9198a1}
+      .note{fill:#0f2a17;stroke:#3fb950}
+      .chat{fill:#0c2440;stroke:#4493f8}
+      .mem{fill:#2a1640;stroke:#ab7df8}
+      .vault{fill:#3a1d0a;stroke:#f0883e}
+      .q{fill:#0d1117;stroke:#e6edf3}
+      .old{stroke:#484f58}.oldhead{fill:#484f58}.x{stroke:#f85149}
+      .note.pick{fill:#3fb950}.chat.pick{fill:#4493f8}.mem.pick{fill:#ab7df8}
+      .ante{fill:#e6edf3;stroke:#e6edf3}
+      .antetext{fill:#0d1117}
+      .card{fill:#0d1117;stroke:#6e7681}
+    }
+    .hl{fill:#fff8c5;stroke:#9a6700}.hltext{font:500 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#1f2328}
+    .mono{font:400 11px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#59636e}
+    .tag{font:600 11px -apple-system,Segoe UI,Helvetica,Arial,sans-serif}
+    .tdec{fill:#8250df}.ttask{fill:#0969da}.tship{fill:#1a7f37}
+    .thread{stroke:#9a6700;stroke-width:2.5;fill:none}.drawer{fill:none;stroke:#ffffff;stroke-width:1.5}
+    @media (prefers-color-scheme: dark){
+      .hl{fill:#2e2a0e;stroke:#d29922}.hltext{fill:#e6edf3}.mono{fill:#9198a1}
+      .tdec{fill:#ab7df8}.ttask{fill:#4493f8}.tship{fill:#3fb950}.thread{stroke:#d29922}.drawer{stroke:#0d1117}
+    }
+  </style>
+<rect class="q" x="410" y="20" width="200" height="46" rx="8" stroke-width="1.5"/><text class="verb" x="510" y="49" text-anchor="middle">Your AI</text>
+<path class="old" d="M410 43 H195 V128"/><polygon class="oldhead" points="195,138 189,126 201,126"/>
+<line class="x" x1="292" y1="30" x2="316" y2="56" stroke-width="3"/><line class="x" x1="316" y1="30" x2="292" y2="56" stroke-width="3"/>
+<text class="small" x="304" y="80" text-anchor="middle">no more opening every note</text>
+<path class="arrow" d="M510 66 V196"/><polygon class="head" points="510,206 504,196 516,196"/><text class="small" x="522" y="112">where did we write about X?</text>
+<rect class="frame" x="20" y="140" width="350" height="306" rx="14"/><text class="title" x="40" y="172">Your vault</text>
+<text class="label" x="40" y="218">Sessions</text>
+<rect class="vault" x="108" y="208" width="10" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="121" y="212" width="12" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="136" y="212" width="8" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="147" y="212" width="10" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="160" y="212" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="172" y="200" width="8" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="183" y="212" width="12" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="198" y="212" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="210" y="212" width="12" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="225" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="236" y="200" width="8" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="247" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="258" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="269" y="200" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="282" y="212" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="294" y="208" width="10" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="307" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="318" y="212" width="10" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="331" y="212" width="8" height="22" rx="1.5" stroke-width="1.2"/>
+<line class="plank" x1="102" y1="235" x2="352" y2="235"/>
+<text class="label" x="40" y="278">Findings</text>
+<rect class="vault" x="108" y="260" width="9" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="120" y="264" width="12" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="135" y="260" width="12" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="150" y="264" width="10" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="163" y="268" width="9" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="175" y="272" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="187" y="260" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="200" y="260" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="213" y="272" width="10" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="226" y="260" width="8" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="237" y="264" width="9" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="249" y="260" width="9" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="261" y="272" width="12" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="276" y="264" width="8" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="287" y="264" width="10" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="300" y="260" width="12" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="315" y="272" width="8" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="326" y="260" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="339" y="272" width="8" height="22" rx="1.5" stroke-width="1.2"/>
+<line class="plank" x1="102" y1="295" x2="352" y2="295"/>
+<text class="label" x="40" y="338">Chats</text>
+<rect class="vault" x="108" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="121" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="134" y="332" width="10" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="147" y="324" width="12" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="162" y="332" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="174" y="332" width="12" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="189" y="324" width="9" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="201" y="328" width="9" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="213" y="320" width="12" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="228" y="332" width="12" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="243" y="320" width="9" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="255" y="324" width="12" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="270" y="320" width="9" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="282" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="295" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="308" y="328" width="9" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="320" y="328" width="8" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="331" y="328" width="9" height="26" rx="1.5" stroke-width="1.2"/>
+<line class="plank" x1="102" y1="355" x2="352" y2="355"/>
+<text class="label" x="40" y="398">Notes</text>
+<rect class="vault" x="108" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="120" y="388" width="12" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="135" y="384" width="10" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="148" y="388" width="8" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="159" y="384" width="12" height="30" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="174" y="388" width="10" height="26" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="187" y="380" width="8" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="198" y="380" width="12" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="213" y="380" width="12" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="228" y="380" width="8" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="239" y="392" width="12" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="254" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="266" y="380" width="9" height="34" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="278" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="290" y="392" width="10" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="303" y="392" width="8" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="314" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="326" y="392" width="10" height="22" rx="1.5" stroke-width="1.2"/>
+<rect class="vault" x="339" y="388" width="8" height="26" rx="1.5" stroke-width="1.2"/>
+<line class="plank" x1="102" y1="415" x2="352" y2="415"/>
+<text class="small" x="40" y="433">years of notes, hundreds of books</text>
+<path class="arrow" d="M370 250 H428"/><polygon class="head" points="438,250 428,244 428,256"/>
+<text class="small" x="405" y="236" text-anchor="middle">reads once</text>
+<rect class="ante" x="440" y="206" width="140" height="88" rx="10"/><text class="antetext" x="510" y="234" text-anchor="middle">vault-map</text>
+<rect class="drawer" x="466" y="248" width="88" height="9" rx="2"/>
+<rect class="drawer" x="466" y="262" width="88" height="9" rx="2"/>
+<rect class="drawer" x="466" y="276" width="88" height="9" rx="2"/>
+<text class="small" x="510" y="318" text-anchor="middle">the catalogue:</text><text class="small" x="510" y="334" text-anchor="middle">note · section · passage</text>
+<text class="small" x="510" y="356" text-anchor="middle">on your computer</text>
+<path class="arrow" d="M580 250 H638"/><polygon class="head" points="648,250 638,244 638,256"/>
+<text class="small" x="615" y="236" text-anchor="middle">points</text>
+<rect class="frame" x="650" y="140" width="350" height="300" rx="14"/><text class="title" x="670" y="172">What your AI reads</text>
+<rect class="card" x="670" y="190" width="314" height="40" rx="8" stroke-width="1.5"/><text class="mono" x="686" y="215">findings/recall-seats.md</text>
+<rect class="card" x="686" y="240" width="298" height="34" rx="8" stroke-width="1.5"/><text class="mono" x="700" y="262">## Why the vault gets its own seats</text>
+<rect class="hl" x="702" y="284" width="282" height="74" rx="8" stroke-width="1.5"/>
+<text class="hltext" x="714" y="306" style="font-size:11.5px">…vault notes ride in up to three</text>
+<text class="hltext" x="714" y="324" style="font-size:11.5px">seats beside the regular ones, so</text>
+<text class="hltext" x="714" y="342" style="font-size:11.5px">they never push out other evidence…</text>
+<text class="small" x="670" y="390">only the passage that answers,</text><text class="small" x="670" y="406">with the note and section it came from</text>
+<path class="arrow" d="M825 140 V43 H622"/><polygon class="head" points="612,43 622,37 622,49"/><text class="small" x="720" y="34" text-anchor="middle">reads only this</text>
+<text class="small" x="510" y="470" text-anchor="middle">one Python file · no AI inside · nothing leaves your computer</text>
+</svg>
