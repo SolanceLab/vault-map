@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 490" width="1020" height="490" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 530" width="1020" height="530" role="img" aria-labelledby="t d">
   <title id="t">How vault-map works</title>
-  <desc id="d">Without vault-map your AI opens every note (crossed out). vault-map reads your vault once and keeps a catalogue of notes, sections and passages on your computer. Your AI asks where you wrote about something; vault-map points to one note, one section and the passage that answers, and your AI reads only that.</desc>
+  <desc id="d">Without vault-map your AI opens note after note (crossed out). vault-map maps your vault once on your computer: every note's title, headings and tags, and the links between notes. Asked where you wrote about the backup plan, it points to the note, the section and the passage that answers, with the notes linked around it, and it can trace the path from one note to another.</desc>
   <style>
     .bg{fill:none}
     .frame{fill:#f6f8fa;stroke:#8c959f;stroke-width:1.5;stroke-dasharray:6 5}
@@ -49,115 +49,52 @@
       .hl{fill:#2e2a0e;stroke:#d29922}.hltext{fill:#e6edf3}.mono{fill:#9198a1}
       .tdec{fill:#ab7df8}.ttask{fill:#4493f8}.tship{fill:#3fb950}.thread{stroke:#d29922}.drawer{stroke:#0d1117}
     }
+    .wl{stroke:#8c959f;stroke-width:1.4;fill:none}.wlpick{stroke:#bc4c00;stroke-width:2.2;fill:none}
+    .chip{font:600 10px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#59636e}
+    .ncard{fill:#ffffff;stroke:#8c959f}.npick{fill:#fff1e5;stroke:#bc4c00}
+    @media (prefers-color-scheme: dark){ .wl{stroke:#6e7681}.wlpick{stroke:#f0883e}.chip{fill:#9198a1}.ncard{fill:#0d1117;stroke:#6e7681}.npick{fill:#3a1d0a;stroke:#f0883e} }
   </style>
 <rect class="q" x="410" y="20" width="200" height="46" rx="8" stroke-width="1.5"/><text class="verb" x="510" y="49" text-anchor="middle">Your AI</text>
 <path class="old" d="M410 43 H195 V128"/><polygon class="oldhead" points="195,138 189,126 201,126"/>
 <line class="x" x1="292" y1="30" x2="316" y2="56" stroke-width="3"/><line class="x" x1="316" y1="30" x2="292" y2="56" stroke-width="3"/>
-<text class="small" x="304" y="80" text-anchor="middle">no more opening every note</text>
-<path class="arrow" d="M510 66 V196"/><polygon class="head" points="510,206 504,196 516,196"/><text class="small" x="522" y="112">where did we write about X?</text>
-<rect class="frame" x="20" y="140" width="350" height="306" rx="14"/><text class="title" x="40" y="172">Your vault</text>
-<text class="label" x="40" y="218">Sessions</text>
-<rect class="vault" x="108" y="208" width="10" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="121" y="212" width="12" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="136" y="212" width="8" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="147" y="212" width="10" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="160" y="212" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="172" y="200" width="8" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="183" y="212" width="12" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="198" y="212" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="210" y="212" width="12" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="225" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="236" y="200" width="8" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="247" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="258" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="269" y="200" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="282" y="212" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="294" y="208" width="10" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="307" y="208" width="8" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="318" y="212" width="10" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="331" y="212" width="8" height="22" rx="1.5" stroke-width="1.2"/>
-<line class="plank" x1="102" y1="235" x2="352" y2="235"/>
-<text class="label" x="40" y="278">Findings</text>
-<rect class="vault" x="108" y="260" width="9" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="120" y="264" width="12" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="135" y="260" width="12" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="150" y="264" width="10" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="163" y="268" width="9" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="175" y="272" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="187" y="260" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="200" y="260" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="213" y="272" width="10" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="226" y="260" width="8" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="237" y="264" width="9" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="249" y="260" width="9" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="261" y="272" width="12" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="276" y="264" width="8" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="287" y="264" width="10" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="300" y="260" width="12" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="315" y="272" width="8" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="326" y="260" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="339" y="272" width="8" height="22" rx="1.5" stroke-width="1.2"/>
-<line class="plank" x1="102" y1="295" x2="352" y2="295"/>
-<text class="label" x="40" y="338">Chats</text>
-<rect class="vault" x="108" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="121" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="134" y="332" width="10" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="147" y="324" width="12" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="162" y="332" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="174" y="332" width="12" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="189" y="324" width="9" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="201" y="328" width="9" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="213" y="320" width="12" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="228" y="332" width="12" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="243" y="320" width="9" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="255" y="324" width="12" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="270" y="320" width="9" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="282" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="295" y="320" width="10" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="308" y="328" width="9" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="320" y="328" width="8" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="331" y="328" width="9" height="26" rx="1.5" stroke-width="1.2"/>
-<line class="plank" x1="102" y1="355" x2="352" y2="355"/>
-<text class="label" x="40" y="398">Notes</text>
-<rect class="vault" x="108" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="120" y="388" width="12" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="135" y="384" width="10" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="148" y="388" width="8" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="159" y="384" width="12" height="30" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="174" y="388" width="10" height="26" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="187" y="380" width="8" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="198" y="380" width="12" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="213" y="380" width="12" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="228" y="380" width="8" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="239" y="392" width="12" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="254" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="266" y="380" width="9" height="34" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="278" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="290" y="392" width="10" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="303" y="392" width="8" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="314" y="392" width="9" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="326" y="392" width="10" height="22" rx="1.5" stroke-width="1.2"/>
-<rect class="vault" x="339" y="388" width="8" height="26" rx="1.5" stroke-width="1.2"/>
-<line class="plank" x1="102" y1="415" x2="352" y2="415"/>
-<text class="small" x="40" y="433">years of notes, hundreds of books</text>
-<path class="arrow" d="M370 250 H428"/><polygon class="head" points="438,250 428,244 428,256"/>
-<text class="small" x="405" y="236" text-anchor="middle">reads once</text>
-<rect class="ante" x="440" y="206" width="140" height="88" rx="10"/><text class="antetext" x="510" y="234" text-anchor="middle">vault-map</text>
-<rect class="drawer" x="466" y="248" width="88" height="9" rx="2"/>
-<rect class="drawer" x="466" y="262" width="88" height="9" rx="2"/>
-<rect class="drawer" x="466" y="276" width="88" height="9" rx="2"/>
-<text class="small" x="510" y="318" text-anchor="middle">the catalogue:</text><text class="small" x="510" y="334" text-anchor="middle">note · section · passage</text>
-<text class="small" x="510" y="356" text-anchor="middle">on your computer</text>
-<path class="arrow" d="M580 250 H638"/><polygon class="head" points="648,250 638,244 638,256"/>
-<text class="small" x="615" y="236" text-anchor="middle">points</text>
-<rect class="frame" x="650" y="140" width="350" height="300" rx="14"/><text class="title" x="670" y="172">What your AI reads</text>
-<rect class="card" x="670" y="190" width="314" height="40" rx="8" stroke-width="1.5"/><text class="mono" x="686" y="215">findings/recall-seats.md</text>
-<rect class="card" x="686" y="240" width="298" height="34" rx="8" stroke-width="1.5"/><text class="mono" x="700" y="262">## Why the vault gets its own seats</text>
-<rect class="hl" x="702" y="284" width="282" height="74" rx="8" stroke-width="1.5"/>
-<text class="hltext" x="714" y="306" style="font-size:11.5px">…vault notes ride in up to three</text>
-<text class="hltext" x="714" y="324" style="font-size:11.5px">seats beside the regular ones, so</text>
-<text class="hltext" x="714" y="342" style="font-size:11.5px">they never push out other evidence…</text>
-<text class="small" x="670" y="390">only the passage that answers,</text><text class="small" x="670" y="406">with the note and section it came from</text>
+<text class="small" x="304" y="80" text-anchor="middle">no more opening note after note</text>
+<path class="arrow" d="M510 66 V218"/><polygon class="head" points="510,228 504,218 516,218"/><text class="small" x="522" y="112">where did we write about the backup plan?</text>
+<rect class="frame" x="20" y="140" width="350" height="360" rx="14"/><text class="title" x="40" y="172">Your vault</text>
+<line class="wlpick" x1="191" y1="282" x2="94" y2="212"/>
+<line class="wlpick" x1="191" y1="282" x2="288" y2="212"/>
+<line class="wl" x1="288" y1="212" x2="94" y2="212"/>
+<line class="wl" x1="191" y1="282" x2="94" y2="352"/>
+<line class="wl" x1="94" y1="352" x2="191" y2="422"/>
+<line class="wl" x1="288" y1="352" x2="191" y2="422"/>
+<line class="wl" x1="288" y1="352" x2="288" y2="212"/>
+<rect class="ncard" x="38" y="192" width="112" height="40" rx="7" stroke-width="1.4"/>
+<text class="mono" x="48" y="209" style="font-size:10.5px">servers.md</text><text class="chip" x="48" y="224">#ops · ## headings</text>
+<rect class="ncard" x="232" y="192" width="112" height="40" rx="7" stroke-width="1.4"/>
+<text class="mono" x="242" y="209" style="font-size:10.5px">incident.md</text><text class="chip" x="242" y="224">#ops · ## headings</text>
+<rect class="npick" x="135" y="262" width="112" height="40" rx="7" stroke-width="1.4"/>
+<text class="mono" x="145" y="279" style="font-size:10.5px">backups.md</text><text class="chip" x="145" y="294">#ops · ## headings</text>
+<rect class="ncard" x="38" y="332" width="112" height="40" rx="7" stroke-width="1.4"/>
+<text class="mono" x="48" y="349" style="font-size:10.5px">budget.md</text><text class="chip" x="48" y="364">#money · ## headings</text>
+<rect class="ncard" x="232" y="332" width="112" height="40" rx="7" stroke-width="1.4"/>
+<text class="mono" x="242" y="349" style="font-size:10.5px">ideas.md</text><text class="chip" x="242" y="364">#later · ## headings</text>
+<rect class="ncard" x="135" y="402" width="112" height="40" rx="7" stroke-width="1.4"/>
+<text class="mono" x="145" y="419" style="font-size:10.5px">travel.md</text><text class="chip" x="145" y="434">#trips · ## headings</text>
+<text class="small" x="40" y="486">notes, headings, tags and the [[links]] between them</text>
+<path class="arrow" d="M370 268 H428"/><polygon class="head" points="438,268 428,262 428,274"/><text class="small" x="405" y="254" text-anchor="middle">maps once</text>
+<rect class="ante" x="440" y="228" width="140" height="84" rx="10"/><text class="antetext" x="510" y="256" text-anchor="middle">vault-map</text>
+<text class="antetext" x="510" y="279" text-anchor="middle" style="font-weight:400;font-size:12px">titles · headings</text><text class="antetext" x="510" y="295" text-anchor="middle" style="font-weight:400;font-size:12px">tags · links</text>
+<text class="small" x="510" y="336" text-anchor="middle">on your computer</text><text class="small" x="510" y="352" text-anchor="middle">no AI inside</text>
+<path class="arrow" d="M580 268 H638"/><polygon class="head" points="648,268 638,262 638,274"/><text class="small" x="615" y="254" text-anchor="middle">points</text>
+<rect class="frame" x="650" y="140" width="350" height="360" rx="14"/><text class="title" x="670" y="172">What your AI reads</text>
+<rect class="card" x="670" y="190" width="314" height="38" rx="8" stroke-width="1.5"/><text class="mono" x="686" y="214">notes/backups.md</text>
+<rect class="card" x="686" y="236" width="298" height="32" rx="8" stroke-width="1.5"/><text class="mono" x="700" y="257">## Rotation</text>
+<rect class="hl" x="702" y="276" width="282" height="56" rx="8" stroke-width="1.5"/>
+<text class="hltext" x="714" y="298" style="font-size:11.5px">…keep three copies: one here, one</text>
+<text class="hltext" x="714" y="316" style="font-size:11.5px">on the server, one off-site…</text>
+<text class="small" x="670" y="360">linked around it:</text>
+<rect class="ncard" x="670" y="370" width="140" height="30" rx="7" stroke-width="1.4"/><text class="mono" x="680" y="389" style="font-size:10.5px">servers.md</text>
+<rect class="ncard" x="820" y="370" width="140" height="30" rx="7" stroke-width="1.4"/><text class="mono" x="830" y="389" style="font-size:10.5px">incident.md</text>
+<text class="small" x="670" y="428">and the path from one note to another:</text><text class="mono" x="670" y="446" style="font-size:10.5px">budget.md → backups.md → servers.md</text>
 <path class="arrow" d="M825 140 V43 H622"/><polygon class="head" points="612,43 622,37 622,49"/><text class="small" x="720" y="34" text-anchor="middle">reads only this</text>
-<text class="small" x="510" y="470" text-anchor="middle">one Python file · no AI inside · nothing leaves your computer</text>
+<text class="small" x="510" y="514" text-anchor="middle">one Python file · standard library only · nothing leaves your computer</text>
 </svg>

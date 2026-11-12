@@ -6,19 +6,19 @@ vault-map finds where you wrote about something in your notes, in a second, with
 
 <div align="center">
 
-🗂️
+🗺️
 
-*Your vault is a library you wrote yourself. Session notes, findings, half-finished ideas, years of it. Every note is a book, and the shelves never stop filling.*
+*Your vault is a town you built note by note. Every note is a house, every heading a room, every tag a neighbourhood, and every link a street from one house to another. After a few years, nobody can hold the whole town in their head.*
 
-*Now you need one passage: the day you decided something, the paragraph where you explained why. Without a map, your AI has to open the books one by one. It spends its tokens on pages that don't matter, and the passage you need is still on a shelf it never reached.*
+*Now you ask where you wrote about something. Without a map, your AI walks the town knocking on doors, reading every room to find one paragraph, and never learns which streets join which houses.*
 
-**vault-map is the card catalogue.** *It reads every shelf once and writes a card for each book, each chapter, each paragraph. Ask where you wrote about something, and it opens the right drawer and points: this note, this section, these lines. Your AI goes straight there and reads only that.*
+**vault-map is the town map.** *It walks every street once and draws the houses, the rooms, the neighbourhoods and the streets between them. Ask a question and it points to the house, the room and the paragraph, with the houses next door. It can trace the route from one note to another.*
 
-*The catalogue lives on your computer. It never writes in your books, and it never sends them anywhere.*
+*The map is drawn on your computer, from your own links. It never moves a thing in your town and never sends it anywhere.*
 
 </div>
 
-<p align="center"><img src="docs/how-it-works.svg" width="900" alt="Your AI asks vault-map once instead of reading every note. vault-map has read your vault once and keeps a catalogue on your computer: notes, their sections and their passages. It points to the one note, section and passage that answer, and your AI reads only that."></p>
+<p align="center"><img src="docs/how-it-works.svg" width="900" alt="Without vault-map your AI opens note after note. vault-map maps your vault once on your computer: every note's title, headings and tags, and the links between notes. Asked where you wrote about the backup plan, it points to the note, the section and the passage that answers, with the notes linked around it, and the path from one note to another."></p>
 
 ## Quick start
 
@@ -47,6 +47,8 @@ A pure-local index for an Obsidian (or any markdown) vault. Build the map once i
 
 **Zero dependencies, zero AI, and the tool never touches the network.** One Python file, standard library only. Nothing in your vault ever leaves your machine. (Only the plugin's one-time `uvx` fetch of the tool itself uses the internet.) vault-map runs on your own computer.
 
+**Where it fits.** vault-map stands alone: one Python file, no AI, one notes folder. [Antechamber](https://github.com/SolanceLab/antechamber) searches many kinds of saved things at once and can use vault-map as its vault shelf; [Scriptorium](https://github.com/SolanceLab/scriptorium) writes memories from your chats; [work-map](https://github.com/SolanceLab/work-map) maps what you decided, planned and shipped.
+
 ## What you need
 
 Python 3.8 or newer. No install, no account, no server. Copy `vault-map.py` anywhere.
@@ -62,24 +64,23 @@ Python 3.8 or newer. No install, no account, no server. Copy `vault-map.py` anyw
 
 ## Tools
 
+Your AI runs these for you through the vault-map skill. By hand:
+
 | Tool | What it does |
 |---|---|
 | `build [vault]` | Reads every `.md` file and writes the map to `<vault>/.vault-map.json` (derived, safe to delete) |
 | `query "terms" [vault] [--n N] [--json] [--sections]` | Ranked notes with title, matching sections, a body snippet and the link and backlink neighbourhood |
 | `graph [vault] [--out file.html]` | A self-contained interactive graph of the vault (pan, zoom, hover, drag, folder legend, search) |
 | `path "note a" "note b" [vault]` | Shortest wikilink chain between two notes |
-| `search(terms, vault, top_n)` | Importable. Returns the `query` results as a dict and prints nothing |
-| `search_sections(terms, vault, top_n)` | Importable. Section search: returns the best passages, each with the note it came from |
 
-Section search (`--sections`, `search_sections()`) returns the passage that answers, not the whole note; how it works and a Python example: [docs/section-search.md](docs/section-search.md).
+Section search (`--sections`) returns the passage that answers, not the whole note: [docs/section-search.md](docs/section-search.md). Using vault-map from Python, and how notes are scored: [docs/commands.md](docs/commands.md).
 
 ## Limits
 
 - Markdown files only (`.md`). Skipped folders: `.obsidian`, `.git`, `.trash`, `node_modules`, `__pycache__`.
 - A section is the text under one heading; very long sections are split into smaller passages.
-- Note scoring: title match 5, tag match 3, heading match 2, path match 1, plus up to 10 for body occurrences. Bodies are scanned live at query time (about 1 second across 800 notes).
+- Note bodies are searched live at query time: about 1 second across 800 notes.
 - The map and the section cache are derived data: delete them and rebuild any time.
-- `query` ranks notes. Section search is `vault-map.py query "terms" --sections` on the command line, or `search_sections()` when you import it.
 
 ## How it works
 
