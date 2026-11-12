@@ -88,7 +88,7 @@ A wiki-style vault does not need an AI to map it: the graph is already written i
 
 It is built on [Graphify](https://github.com/Graphify-Labs/graphify)'s idea (Graphify-Labs): extract a corpus into a graph once, then query the cheap graph for orientation instead of re-reading raw files. Graphify's path for markdown sends file contents to an LLM API, which a private vault must never do, so vault-map reimplements the map-then-query idea for markdown with no network and no AI. No Graphify code is used; this is an independent implementation. For source-code repositories, use Graphify itself in `--code-only` mode.
 
-Why not just grep? Grep finds lines; the map finds notes and sections, ranked, with structure (which sections, what links where). See [MARKDOWN-GUIDE.md](MARKDOWN-GUIDE.md) for note habits that keep retrieval cheap.
+Why not just grep? Grep finds lines; the map finds notes and sections, ranked, with structure (which sections, what links where). See [MARKDOWN-GUIDE.md](plugin/skills/vault-map/MARKDOWN-GUIDE.md) for note habits that keep retrieval cheap.
 
 ## Credit and use
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.1
+
+- The note-writing guide now ships inside the skill (`plugin/skills/vault-map/MARKDOWN-GUIDE.md`), so your AI can suggest habits that make notes easier to find. The tool itself is unchanged.
+- README: a front page with the town-map picture; Python use and scoring moved to `docs/commands.md`.
+
 ## 1.4.0
 
 Installable as a plugin for Claude Code and Codex. The plugin is a skill that runs vault-map with `uvx` straight from this repository, so nothing is copied by hand. `pyproject.toml` lets `uvx` fetch the one script. The tool itself is unchanged.

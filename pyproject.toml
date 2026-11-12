@@ -1,6 +1,6 @@
 [project]
 name = "vault-map"
-version = "1.4.0"
+version = "1.4.1"
 description = "A pure-local index for a markdown vault: ask where you wrote about something and get the passage back."
 requires-python = ">=3.8"
 license = { text = "PolyForm-Noncommercial-1.0.0 (PolyForm Noncommercial 1.0.0)" }

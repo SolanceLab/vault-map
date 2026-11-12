@@ -1,6 +1,6 @@
 {
   "name": "vault-map",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "vault-map: ask where you wrote about something and get the passage back, from a map of your markdown or Obsidian vault. Runs on your own computer; nothing leaves it.",
   "author": {
     "name": "House of Solance",
