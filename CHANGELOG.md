@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.2
+
+Section search uses far less memory; results are unchanged.
+- Each word is kept once, and every section keeps its word counts as two small number arrays instead of its own word dictionary. On a vault of 3,098 notes (230,847 sections) a long-running process now holds about 0.4–0.5 GB instead of 3–6 GB.
+- Calling `section_index` again in the same process reuses what is already in memory: only notes that changed are re-read, and when nothing changed the same index comes back at no cost. The cache file is read only once per process.
+- The cache file is smaller (246 MB → 156 MB on the same vault) and is written and read one note at a time. It moves to `~/.cache/vault-map/sections-v2-*.pickle`; the old file is removed the first time the new one is written, so the first run after upgrading re-reads every note once.
+- Search scores and result order are identical to 1.4.1 (checked on 30 queries against a real vault).
+
 ## 1.4.1
 
 - The note-writing guide now ships inside the skill (`plugin/skills/vault-map/MARKDOWN-GUIDE.md`), so your AI can suggest habits that make notes easier to find. The tool itself is unchanged.

@@ -431,6 +431,8 @@ loop();
 # ranks higher). Selection after Graphify's seeds: drop results far below the top, and keep at least one
 # result for every question word that matched anything. Read-only: the section index lives in memory.
 import math
+from array import array
+from bisect import bisect_left
 from collections import Counter
 
 SECTION_CHARS = 3000
@@ -489,7 +491,7 @@ def _cache_path(vault):
     import hashlib
     d = os.path.join(os.path.expanduser("~"), ".cache", "vault-map")
     os.makedirs(d, mode=0o700, exist_ok=True)
-    return os.path.join(d, "sections-" + hashlib.sha1(os.path.abspath(vault).encode()).hexdigest()[:16] + ".pickle")
+    return os.path.join(d, "sections-v2-" + hashlib.sha1(os.path.abspath(vault).encode()).hexdigest()[:16] + ".pickle")
 
 
 def _file_units(text):
@@ -509,22 +511,136 @@ def _file_units(text):
     return out
 
 
-def section_index(vault):
-    """Section index, kept in ~/.cache/vault-map (never inside the vault). Only changed notes are re-read."""
+class _Unit:
+    """One section: where it sits, and its word counts as two parallel arrays (word ids ascending, counts)."""
+    __slots__ = ("rel", "title", "heading", "start", "end", "ids", "cnt", "len", "hw", "tw", "gw", "note")
+
+    def __getitem__(self, key):
+        try:
+            return getattr(self, key)
+        except AttributeError:
+            raise KeyError(key) from None
+
+
+def _encode(tf, words, wid):
+    """Counter -> (ids, cnt) arrays through the shared vocabulary; a new word is appended to it."""
+    pairs = []
+    for w, c in tf.items():
+        i = wid.get(w)
+        if i is None:
+            i = wid[w] = len(words)
+            words.append(w)
+        pairs.append((i, c))
+    pairs.sort()
+    return array("I", [p[0] for p in pairs]), array("H", [p[1] for p in pairs])
+
+
+def _rows(units):
+    return [(u.heading, u.start, u.end, u.ids, u.cnt) for u in units]
+
+
+def _make_units(rel, rows, n):
+    title = n.get("title") or os.path.basename(rel)[:-3]
+    tw, gw = set(_words(title)), set(t for tag in n.get("tags", []) for t in _words(tag))
+    heads, out = {}, []
+    for head, start, end, ids, cnt in rows:
+        u = _Unit()
+        u.rel, u.title, u.heading, u.start, u.end, u.ids, u.cnt = rel, title, head, start, end, ids, cnt
+        u.len = sum(cnt)
+        if head not in heads:
+            heads[head] = frozenset(sys.intern(w) for w in _words(head))
+        u.hw, u.tw, u.gw, u.note = heads[head], tw, gw, n
+        out.append(u)
+    return out
+
+
+def _load_cache(cp, memo):
+    """Fill memo words/wid/files from the streamed v2 pickle (header, then one record per file); a missing,
+    short, old-layout or broken cache leaves memo empty."""
     import pickle
-    cp = _cache_path(vault)
-    cache = {}
     try:
         with open(cp, "rb") as fh:
-            cache = pickle.load(fh)
-    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ValueError):
-        cache = {}
-    mp = {}
+            # one pickle per record, each read with a fresh memo (a shared Unpickler would resolve the
+            # writer's per-record back-references against the wrong objects)
+            head = pickle.load(fh)
+            if not isinstance(head, dict) or head.get("v") != 2 or "count" not in head:
+                return
+            words, files = head["words"], {}
+            for _ in range(head["count"]):
+                rel, key, rows = pickle.load(fh)
+                conv = []
+                for h, start, end, ib, cb in rows:
+                    ids, cnt = array("I"), array("H")
+                    ids.frombytes(ib); cnt.frombytes(cb)
+                    if len(ids) != len(cnt) or (len(ids) and ids[-1] >= len(words)):
+                        raise ValueError("bad section arrays")
+                    conv.append((h, start, end, ids, cnt))
+                files[rel] = [tuple(key), conv, None, None]
+            try:
+                pickle.load(fh)
+                return  # trailing data: not a cache we wrote
+            except EOFError:
+                pass
+    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ValueError, KeyError, TypeError, IndexError):
+        return
+    memo["words"], memo["wid"], memo["files"] = words, {w: i for i, w in enumerate(words)}, files
+
+
+def _save_cache(cp, memo, files):
+    import pickle
+    tmp = cp + ".tmp"
+    with open(tmp, "wb") as fh:  # streamed: only one file's bytes exist at a time
+        pickle.dump({"v": 2, "words": memo["words"], "count": len(files)}, fh, protocol=pickle.HIGHEST_PROTOCOL)
+        for rel, ent in files.items():
+            pickle.dump((rel, ent[0], [(h, s, e, i.tobytes(), c.tobytes()) for h, s, e, i, c in _rows(ent[2])]),
+                        fh, protocol=pickle.HIGHEST_PROTOCOL)
+    os.chmod(tmp, 0o600)
+    os.replace(tmp, cp)
+    old = cp.replace("sections-v2-", "sections-")  # the old-format cache of this vault is dead weight now
+    if old != cp:
+        try:
+            os.remove(old)
+        except OSError:
+            pass
+
+
+# One memo per vault path for the life of the process: a refresh reuses the per-note arrays already in memory
+# instead of loading the cache file again, and returns the SAME index when nothing changed.
+_MEMO = {}
+
+
+def _bump_df(df, ent, sign):
+    arrs = [u.ids for u in ent[2]] if ent[2] is not None else [r[3] for r in ent[1]]
+    for ids in arrs:
+        for i in ids:
+            df[i] += sign
+
+
+def section_index(vault):
+    """Section index, kept in ~/.cache/vault-map (never inside the vault). Only changed notes are re-read."""
+    absv = os.path.abspath(vault)
+    memo = _MEMO.get(absv)
+    cp = _cache_path(vault)
+    if memo is None:
+        memo = {"words": [], "wid": {}, "files": {}, "df": None, "mapkey": None, "by_rel": {}, "ix": None}
+        _load_cache(cp, memo)
+        _MEMO[absv] = memo
+    words, wid, old = memo["words"], memo["wid"], memo["files"]
     path = os.path.join(vault, ".vault-map.json")
-    if os.path.exists(path):
-        mp = json.load(open(path)).get("notes", {})
-    by_rel = {n["rel"]: n for n in mp.values()}
-    files, changed = {}, False
+    try:
+        st = os.stat(path)
+        mapkey = (st.st_mtime_ns, st.st_size)
+    except OSError:
+        mapkey = None
+    if mapkey != memo["mapkey"] or mapkey is None:
+        if mapkey:
+            with open(path) as fh:
+                mp = json.load(fh).get("notes", {})
+        else:
+            mp = {}
+        memo["by_rel"], memo["mapkey"] = {n["rel"]: n for n in mp.values()}, mapkey
+    by_rel = memo["by_rel"]
+    files, dirty = {}, []
     for root, dirs, fs in os.walk(vault):
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for f in fs:
@@ -537,44 +653,71 @@ def section_index(vault):
             except OSError:
                 continue
             key = (int(st.st_mtime), st.st_size)
-            hit = cache.get(rel)
+            hit = old.get(rel)
             if hit and hit[0] == key:
                 files[rel] = hit
                 continue
             try:
-                text = open(full, encoding="utf-8", errors="replace").read()
+                with open(full, encoding="utf-8", errors="replace") as fh:
+                    text = fh.read()
             except OSError:
                 continue
-            files[rel] = (key, _file_units(text))
-            changed = True
-    if changed or len(files) != len(cache):
-        tmp = cp + ".tmp"
-        with open(tmp, "wb") as fh:
-            pickle.dump(files, fh, protocol=pickle.HIGHEST_PROTOCOL)
-        os.chmod(tmp, 0o600)
-        os.replace(tmp, cp)
-    units, df = [], Counter()
-    for rel, (_, us) in files.items():
+            rows = [(h, s, e) + _encode(tf, words, wid) for h, s, e, tf in _file_units(text)]
+            files[rel] = [key, rows, None, None]
+            dirty.append(rel)
+    gone = [rel for rel in old if rel not in files]
+    changed = bool(dirty or gone)
+    df = memo["df"]
+    if df is None:
+        df = memo["df"] = array("I")
+        df.extend(array("I", [0]) * len(words))
+        for ent in files.values():
+            _bump_df(df, ent, 1)
+    else:
+        if len(df) < len(words):
+            df.extend(array("I", [0]) * (len(words) - len(df)))
+        for rel in gone + dirty:
+            if rel in old:
+                _bump_df(df, old[rel], -1)
+        for rel in dirty:
+            _bump_df(df, files[rel], 1)
+    if not changed and memo["ix"] is not None and memo["ix"]["mapkey"] == mapkey:
+        return memo["ix"]
+    units = []
+    for rel, ent in files.items():
         n = by_rel.get(rel, {})
-        title = n.get("title") or os.path.basename(rel)[:-3]
-        tw, gw = set(_words(title)), set(t for tag in n.get("tags", []) for t in _words(tag))
-        for head, start, end, tf in us:
-            units.append({"rel": rel, "title": title, "heading": head, "start": start, "end": end, "tf": tf,
-                          "len": sum(tf.values()), "hw": set(_words(head)), "tw": tw, "gw": gw, "note": n})
-            df.update(tf.keys())
-    avg = (sum(u["len"] for u in units) / len(units)) if units else 1.0
-    return {"units": units, "df": df, "n": len(units), "avg": avg, "vault": vault}
+        if ent[2] is None or ent[3] != n:
+            ent[2], ent[3] = _make_units(rel, ent[1] if ent[2] is None else _rows(ent[2]), n), n
+            ent[1] = None
+        units.extend(ent[2])
+    memo["files"] = files
+    if changed:
+        _save_cache(cp, memo, files)
+    avg = (sum(u.len for u in units) / len(units)) if units else 1.0
+    ix = {"units": units, "df": array("I", df), "n": len(units), "avg": avg, "vault": vault,
+          "words": words, "wid": wid, "mapkey": mapkey}
+    memo["ix"] = ix
+    return ix
 
 
-def _unit_text(vault, u):
+def _unit_text(vault, u, words=None):
+    full = os.path.join(vault, u["rel"])
+    if u["start"] >= 0 and u["end"] > u["start"]:
+        try:  # read only up to the section, in small steps: a note of several MB is never held whole
+            with open(full, encoding="utf-8", errors="replace") as fh:
+                skip = u["start"]
+                while skip > 0:
+                    skip -= len(fh.read(min(skip, 65536)) or " " * skip)
+                return fh.read(u["end"] - u["start"])
+        except OSError:
+            return ""
     try:
-        text = open(os.path.join(vault, u["rel"]), encoding="utf-8", errors="replace").read()
+        text = open(full, encoding="utf-8", errors="replace").read()
     except OSError:
         return ""
-    if u["start"] >= 0 and u["end"] > u["start"]:
-        return text[u["start"]:u["end"]]
+    have = Counter({words[i]: c for i, c in zip(u.ids, u.cnt)}) if words is not None else None
     for head, piece in _sections(text):
-        if head == u["heading"] and Counter(_words(piece)) == u["tf"]:
+        if head == u["heading"] and Counter(_words(piece)) == have:
             return piece
     return ""
 
@@ -648,27 +791,35 @@ def search_sections(terms, vault, top_n=8, index=None, k1=1.2, b=0.75, floor=0.2
     if top_n <= 0:  # asking for no results: nothing to rank (and nothing for the coverage loop to pop)
         return {"query": " ".join(terms), "hits": 0, "results": []}
     N, df, avg = ix["n"], ix["df"], ix["avg"]
-    idf = {t: math.log(1 + (N - df.get(t, 0) + 0.5) / (df.get(t, 0) + 0.5)) for t in terms}
+    tids = [ix["wid"].get(t) for t in terms]
+    dfs = [df[x] if x is not None and x < len(df) else 0 for x in tids]
+    idf = {t: math.log(1 + (N - d + 0.5) / (d + 0.5)) for t, d in zip(terms, dfs)}
     scored, best_for = [], {}
     for i, u in enumerate(ix["units"]):
         s, matched = 0.0, 0
-        for t in terms:
-            tf = u["tf"].get(t, 0)
-            here = tf or t in u["hw"] or t in u["tw"] or t in u["gw"]
+        ids, tfs = u.ids, []
+        for t, tid in zip(terms, tids):
+            tf = 0
+            if tid is not None:
+                p = bisect_left(ids, tid)
+                if p < len(ids) and ids[p] == tid:
+                    tf = u.cnt[p]
+            tfs.append(tf)
+            here = tf or t in u.hw or t in u.tw or t in u.gw
             if not here:
                 continue
             matched += 1
             if tf:
-                s += idf[t] * tf * (k1 + 1) / (tf + k1 * (1 - b + b * u["len"] / avg))
-            if t in u["hw"]: s += idf[t] * 1.0
-            if t in u["tw"]: s += idf[t] * 0.5
-            if t in u["gw"]: s += idf[t] * 0.5
+                s += idf[t] * tf * (k1 + 1) / (tf + k1 * (1 - b + b * u.len / avg))
+            if t in u.hw: s += idf[t] * 1.0
+            if t in u.tw: s += idf[t] * 0.5
+            if t in u.gw: s += idf[t] * 0.5
         if not matched:
             continue
         s *= 0.25 + 0.75 * matched / len(terms)
         scored.append((s, i))
-        for t in terms:
-            if t in u["tf"] and (t not in best_for or s > best_for[t][0]):
+        for t, tf in zip(terms, tfs):
+            if tf and (t not in best_for or s > best_for[t][0]):
                 best_for[t] = (s, i)
     scored.sort(reverse=True)
     top = scored[0][0] if scored else 0
@@ -678,7 +829,7 @@ def search_sections(terms, vault, top_n=8, index=None, k1=1.2, b=0.75, floor=0.2
     results, by_window, seen_pos = [], {}, set()
 
     def make(s, i):
-        u = ix["units"][i]; n = u["note"]; full = _unit_text(vlt, u)
+        u = ix["units"][i]; n = u["note"]; full = _unit_text(vlt, u, ix["words"])
         win = best_window(full, terms, weights=idf).replace("\n", " ")
         return {"path": u["rel"], "title": u["title"], "score": round(s, 3), "bytes": n.get("bytes"),
                 "modified": time.strftime("%Y-%m-%d", time.localtime(n["mtime"])) if n.get("mtime") else None,
@@ -709,7 +860,8 @@ def search_sections(terms, vault, top_n=8, index=None, k1=1.2, b=0.75, floor=0.2
         add(s, i)
     # one result per matched question word, if the cut left a word with none
     for t, (s, i) in sorted(best_for.items(), key=lambda kv: -kv[1][0]):
-        if any(t in ix["units"][r["_i"]]["tf"] for r in results):
+        tid = ix["wid"].get(t)
+        if tid is not None and any(tid in ix["units"][r["_i"]].ids for r in results):
             continue
         if len(results) >= top_n:
             gone = results.pop()
